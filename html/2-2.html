@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>hd</title>
+        <script src="../js/vue.js"></script>
+    </head>
+    <body>
+        <div id="app">{{content}}</div>
+        <script>
+            //使用vue不需要关注dom的操作而集中于数据的管理
+            var app = new Vue({
+                //el表示vue实例负责管理的区域
+                el: '#app',
+                //定义数据
+                data: {
+                    content: 'Hello World'
+                }
+            })
+
+            setTimeout(function(){
+                app.$data.content = 'Hello World Again'
+            }, 2000)
+        </script>
+    </body>
+</html>

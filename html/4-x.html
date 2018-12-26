@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>hd</title>
+        <script src="../js/vue.js"></script>
+    </head>
+    <body>
+        <div id="app">
+            <h1>1.is的用法 -> 解决一些h5标签的小BUG</h1>
+            <table>
+                <tbody>
+                    <tr is="row"></tr>
+                    <tr is="row"></tr>
+                    <tr is="row"></tr>
+                </tbody>
+            </table>
+
+            <h1>2.子组件中的data不能是一个对象，必须是一个函数</h1>
+            <table>
+                <tbody>
+                    <tr is="row1"></tr>
+                    <tr is="row1"></tr>
+                    <tr is="row1"></tr>
+                </tbody>
+            </table>
+
+            <h1>3.ref的用法</h1>
+            <div
+                ref="hello"
+                @click="handleDivClick1"
+            >
+                Hello world
+            </div>
+            <counter @change="handleChange" ref="counter1"></counter>
+            <counter @change="handleChange" ref="counter2"></counter>
+            <div>{{total}}</div>
+
+            <h1>4.用局部子组件实现计数器</h1>
+            <subcounter :count="0" @change="handleChange2" ref="subc1"></subcounter>
+            <subcounter :count="0" @change="handleChange2" ref="subc2"></subcounter>
+            <div>{{total2}}</div>
+
+            <h1>5.子组件参数校验</h1>
+            <comp4-3 content="Hello world"></comp4-3>
+        </div>
+        <script>
+            Vue.component("row", {
+                template: "<tr><td>This is a row</td></tr>"
+            })
+
+            Vue.component("row1", {
+                data: function(){
+                    return {
+                        content: "This is a row for 2"
+                    }
+                },
+                template: "<tr><td>{{content}}</td></tr>"
+            })
+
+            Vue.component("counter", {
+                data: function(){
+                    return {
+                        number: 0
+                    }
+                },
+                template: '<div @click="clk">{{number}}</div>',
+                methods: {
+                    clk(){
+                        this.number++;
+                        this.$emit("change");
+                    }
+                }
+            })
+
+            var subcounter = {
+                props: ["count"],
+                template: '<div @click="handleClick">{{number}}</div>',
+                data: function(){
+                    return {
+                        number: this.count
+                    }
+                },
+                methods: {
+                    handleClick(){
+                        var random = Math.floor(Math.random() * 9) + 1;
+                        this.number = this.number + random;
+                        this.$emit("change" ,random);
+                    }
+                }
+            }
+
+            Vue.component("comp4-3", {
+                template: '<div>{{content}}</div>',
+                props: {
+                    content: {
+                        type: String,
+                        required: false,
+                        default: "This is a defaulr value",
+                        validator: function(value){
+                            return value.length > 5;
+                        }
+                    }
+                }
+            })
+
+            new Vue({
+                el: "#app",
+                data: {
+                    total: 0,
+                    total2: 0
+                },
+                components: {
+                    subcounter: subcounter
+                },
+                methods: {
+                    handleDivClick1(){
+                        console.log(this.$refs.hello.innerHTML.trim());
+                    },
+                    handleChange(){
+                        this.total = this.$refs.counter1.number + this.$refs.counter2.number;
+                    },
+                    handleChange2(random){
+                        this.total2 = this.total2 + random;
+                    }
+                }
+            })
+        </script>
+    </body>
+</html>

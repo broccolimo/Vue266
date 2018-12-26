@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>组件间传值</title>
+        <script src="../js/vue.js"></script>
+    </head>
+    <body>
+        <div id="app">
+            <p v-html="description"></p>
+            <input type="text" v-model="inputValue"/>
+            <button v-on:click="handleBtnClick">提交</button>
+            <ul>
+                <todo-item v-for="(item, index) in list" v-bind:content="item" v-bind:index="index" @delete="handleItemDelete"></todo-item>
+            </ul>
+        </div>
+        <script>
+            // 局部组件，注意声明顺序
+            var TodoItem = {
+                props: ["content", "index"],
+                template: '<li @click="handleItemClick">{{content}}</li>',
+                //子组件的方法必须写在子组件中，不能写在父组件中
+                methods: {
+                   handleItemClick(){
+                       this.$emit("delete", this.index);
+                   }
+                }
+            };
+            
+           var app = new Vue({
+               el: '#app',
+               components: {
+                   TodoItem: TodoItem
+               },
+               data: {
+                   list: [],
+                   inputValue: '',
+                   description: '点击list中的某一项，可以把它删除掉<ul><li>父给子传值用v-bind</li><li>子给父传值用$emit</li></ul>'
+               },
+               methods: {
+                   handleBtnClick(){
+                       this.list.push(this.inputValue);
+                       this.inputValue = '';
+                   },
+                   handleItemDelete(index){
+                       //从下标为index处删除一项
+                       this.list.splice(index, 1);
+                   }
+               }
+           }); 
+        </script>
+    </body>
+</html>

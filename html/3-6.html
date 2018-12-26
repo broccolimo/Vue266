@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Vue中的样式绑定&条件渲染&列表渲染</title>
+        <script src="../js/vue.js"></script>
+        <style>
+            .activated{
+                color: red
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <div @click="handleDivClick_1" :class="{activated: isActivated_1}">Style Test - 1</div>
+            <div @click="handleDivClick_2" :class="[isActivated_2]">Style Test - 2</div>
+            <div @click="handleDivClick_3" :style="styleObj">Style Test - 3</div>
+            <div @click="clk_1">
+                <div v-if="show === 'A'">A</div>
+                <div v-else-if="show === 'B'">B</div>
+                <div v-else>C</div>
+            </div>
+            <div @click="clk_2">{{count}}</div>
+            <div v-if="show2">用户名: <input key="username"/></div>
+            <div v-else>邮箱名: <input key="email"/></div>
+            <!-- template的作用 -> 不会渲染自身，只循环里边的内容，不会循环带壳的内容 -->
+            <template v-for="(item, index) of list">
+                <div>{{item}} ---- {{index}}</div>
+                <div>{{item}}</div>
+            </template>
+            <ul>
+                <h1>Vue提供的list相关方法</h1>
+                <li v-for="item in despList">{{item}}</li>
+            </ul>
+        </div>
+        <script>
+            var vm = new Vue({
+                el: "#app",
+                data: {
+                    isActivated_1: false,
+                    isActivated_2: "",
+                    styleObj: {
+                        color: "black"
+                    },
+                    show: "A",
+                    show2: false,
+                    count: 1,
+                    list: ["Nice", "to", "meet", "you"],
+                    despList: ["pop() -> 删除最后一个", "push(arg) -> 在最后边加上arg", 
+                        "shift() -> 删除第一个", "unshift(arg) -> 在最前边加上arg", 
+                        "splice(index, num[, arg]) -> 从index处开始删除num个，再加上arg"]
+                },
+                methods: {
+                    handleDivClick_1(){
+                        this.isActivated_1 = !this.isActivated_1;
+                    },
+                    handleDivClick_2(){
+                        this.isActivated_2 = this.isActivated_2 === "activated" ? "" : "activated";
+                    },
+                    handleDivClick_3(){
+                        this.styleObj.color = this.styleObj.color === "black" ? "red" : "black";
+                    },
+                    clk_1(){
+                        this.show = this.show === "A" ? "B" : (this.show === "B" ? "" : "A");
+                    },
+                    clk_2(){
+                        this.count = this.count === 10 ? 1 : this.count + 1;
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
